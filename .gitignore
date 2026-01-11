@@ -40,3 +40,4 @@ pip-delete-this-directory.txt
 venv
 .env
 credentials.json
+questions.json
