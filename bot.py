@@ -1,27 +1,43 @@
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import logging
 import os
+import logging
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram import Update
 from dotenv import load_dotenv
+from dialogflow_api import detect_intent_text
 
 
-def start(update, context):
+def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text("Здравствуйте")
+
+   
+def handle_message(update: Update, context: CallbackContext) -> None:
     
-def echo(update, context):
-    update.message.reply_text(update.message.text)
+    project_id = os.environ["PROJECT_ID"]
+    
+    user_text = update.message.text
+    user_id = update.effective_user.id
+
+    answer = detect_intent_text(
+        project_id=project_id,
+        session_id=str(user_id),
+        text=user_text,
+    )
+    
+    update.message.reply_text(answer)
+
 
 def main():
     
     load_dotenv()
-    TG_BOT_API=os.environ["TG_BOT_API"]
+    telegram_token = os.environ["TG_BOT_API"]
 
     logging.basicConfig(level=logging.INFO)
 
-    updater = Updater(token=TG_BOT_API, use_context=True)
+    updater = Updater(token=telegram_token, use_context=True)
     dispatcher = updater.dispatcher
     
     dispatcher.add_handler(CommandHandler('start', start))
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
     
     updater.start_polling()
     updater.idle()
