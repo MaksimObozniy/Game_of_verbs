@@ -3,35 +3,33 @@ import os
 from telegram import Bot
 
 
-logs_bot = None
-tg_chat_id = None
-
-
 class TelegramLogsHandler(logging.Handler):
-    def emit(self, record):
-        log_message = self.format(record)
+    def __init__(self, token, chat_id):
+        super().__init__()
+        self.bot = Bot(token=token)
+        self.chat_id = chat_id
 
-        if logs_bot and tg_chat_id:
-            logs_bot.send_message(chat_id=tg_chat_id, text=log_message)
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 
 def setup_logging():
-    global logs_bot, tg_chat_id
+    bot_token=os.environ["TG_DEBUG_TOKEN"]
+    chat_id=os.environ["TG_USER_ID"]
+    
+    logger = logging.getLogger("igra_glagolov")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
 
-    tg_chat_id = os.environ["TG_USER_ID"]
-    token = os.environ["TG_DEBUG_TOKEN"]
+    telegram_handler = TelegramLogsHandler(bot_token, chat_id)
 
-    if not tg_chat_id or not token:
-        return
-
-    logs_bot = Bot(token=token)
-
-    telegram_handler = TelegramLogsHandler()
-    telegram_handler.setLevel(logging.ERROR)
-
-    formater = logging.Formater(
-        "%(asctime)s - %(levelname)s - %(message)s"
+    formatter = logging.Formatter(
+        "%(asctime)s — %(levelname)s — %(message)s"
     )
-    telegram_handler.setFormatter(formater)
 
-    logging.getLogger().addHandler(telegram_handler)
+    telegram_handler.setFormatter(formatter)
+
+    logger.addHandler(telegram_handler)
+
+    return logger

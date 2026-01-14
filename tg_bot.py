@@ -18,7 +18,7 @@ def handle_message(update: Update, context: CallbackContext) -> None:
     user_text = update.message.text
     user_id = update.effective_user.id
 
-    answer = detect_intent_text(
+    answer, is_fallback = detect_intent_text(
         project_id=project_id,
         session_id=str(user_id),
         text=user_text,
@@ -32,10 +32,10 @@ def main():
     load_dotenv()
     tg_token = os.environ["TG_BOT_API"]
 
-    setup_logging()
-    logging.info("Telegram бот был только что запущен!")
+    logger = setup_logging()
 
     try:
+        logger.info("Telegram бот был только что запущен!")
         updater = Updater(token=tg_token, use_context=True)
         dispatcher = updater.dispatcher
 
@@ -44,9 +44,10 @@ def main():
 
         updater.start_polling()
         updater.idle()
+        
 
     except Exception:
-        logging.exception("Telegram бот упал с ошибкой!")
+        logger.exception("Telegram бот упал с ошибкой!")
         raise
 
 
