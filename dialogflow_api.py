@@ -18,5 +18,5 @@ def detect_intent_text(project_id: str, session_id: str, text: str, language_cod
 
     answer = response.query_result.fulfillment_text
     is_fallback = response.query_result.intent.is_fallback
-    
+
     return answer, is_fallback

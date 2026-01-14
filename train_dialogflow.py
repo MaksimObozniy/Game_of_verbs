@@ -5,10 +5,10 @@ from dotenv import load_dotenv
 
 
 def create_intent(project_id: str, display_name: str, training_phrases: list[str], message_texts: list[str], language_code: str = "ru"):
-    
+
     intents_client = dialogflow.IntentsClient()
     parent = dialogflow.AgentsClient.agent_path(project_id)
-    
+
     training_phrases_objects = []
     for pharse in training_phrases:
         part = dialogflow.Intent.TrainingPhrase.Part(text=pharse)
@@ -32,6 +32,7 @@ def create_intent(project_id: str, display_name: str, training_phrases: list[str
         }
     )
 
+
 def main():
     with open("questions.json", 'r', encoding="utf-8") as file:
         questions = json.load(file)
@@ -46,6 +47,7 @@ def main():
             training_phrases=intent_data["questions"],
             message_texts=[intent_data["answer"]],
         )
+
 
 if __name__ == "__main__":
     main()
