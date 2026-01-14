@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from dialogflow_api import detect_intent_text
 
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
@@ -16,7 +17,7 @@ def send_message(vk_api_client, user_id: int, text: str) -> None:
 def main():
     load_dotenv()
     token = os.environ["VK_GROUP_TOKEN"]
-    
+    project_id = os.environ["PROJECT_ID"]
     vk_session = vk_api.VkApi(token=token)
     vk_api_client = vk_session.get_api()
     longpool = VkLongPoll(vk_session)
@@ -28,7 +29,12 @@ def main():
             incoming_text = event.text
             user_id = event.user_id
             
-            send_message(vk_api_client, user_id=user_id, text=incoming_text)
+            answer = detect_intent_text(
+                project_id=project_id,
+                session_id=str(user_id),
+                text=incoming_text,
+            )
+            send_message(vk_api_client, user_id=user_id, text=answer)
             
             
 if __name__ == "__main__":
