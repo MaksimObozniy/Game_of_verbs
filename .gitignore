@@ -41,3 +41,4 @@ venv
 .env
 credentials.json
 questions.json
+.DS_Store
