@@ -18,6 +18,7 @@ def main():
     load_dotenv()
     token = os.environ["VK_GROUP_TOKEN"]
     project_id = os.environ["PROJECT_ID"]
+
     vk_session = vk_api.VkApi(token=token)
     vk_api_client = vk_session.get_api()
     longpool = VkLongPoll(vk_session)
@@ -29,13 +30,14 @@ def main():
             incoming_text = event.text
             user_id = event.user_id
             
-            answer = detect_intent_text(
+            answer, is_fallback = detect_intent_text(
                 project_id=project_id,
                 session_id=str(user_id),
                 text=incoming_text,
             )
-            send_message(vk_api_client, user_id=user_id, text=answer)
-            
-            
+            if not is_fallback:
+                send_message(vk_api_client, user_id=user_id, text=answer)
+
+
 if __name__ == "__main__":
     main()
