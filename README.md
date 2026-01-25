@@ -17,11 +17,16 @@
 - Отправляет уведомление в Telegram при запуске бота
 - Отправляет уведомление с текстом ошибки при падении бота
 
+  ![ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/19e0e81e-a691-44e6-a67e-60d5a9d9123d)
+
+
 ### VK бот
 - Работает от имени группы ВКонтакте
 - Получает входящие сообщения пользователей
 - Отвечает только если DialogFlow распознал запрос
 - Если DialogFlow не понял сообщение — бот молчит (сообщение уходит операторам)
+
+  ![2026-01-2512 28 59-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/ae5bad2b-02a9-4678-8d38-c1f3d1b4be46)
 
 ---
 
