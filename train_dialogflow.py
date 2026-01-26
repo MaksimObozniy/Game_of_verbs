@@ -1,5 +1,6 @@
-import json
+import argparse
 import os
+import json
 from google.cloud import dialogflow_v2 as dialogflow
 from dotenv import load_dotenv
 
@@ -34,7 +35,12 @@ def create_intent(project_id: str, display_name: str, training_phrases: list[str
 
 
 def main():
-    with open("questions.json", 'r', encoding="utf-8") as file:
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--path', help="Путь к файлу с вопросами", default="questions.json")
+    args = parser.parse_args()
+    
+    with open(args.path, 'r', encoding="utf-8") as file:
         questions = json.load(file)
 
     load_dotenv()
