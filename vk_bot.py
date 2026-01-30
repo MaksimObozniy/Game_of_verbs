@@ -39,7 +39,7 @@ def main():
                 
                 answer, is_fallback = detect_intent_text(
                     project_id=project_id,
-                    session_id=str(user_id),
+                    session_id=str(f'vk-{user_id}'),
                     text=incoming_text,
                 )
                 if not is_fallback:

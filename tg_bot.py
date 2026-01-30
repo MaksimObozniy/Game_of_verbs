@@ -19,7 +19,7 @@ def handle_message(update: Update, context: CallbackContext, project_id) -> None
 
     answer, is_fallback = detect_intent_text(
         project_id=project_id,
-        session_id=str(user_id),
+        session_id=str(f'tg-{user_id}'),
         text=user_text,
     )
 
