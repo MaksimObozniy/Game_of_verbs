@@ -1,5 +1,6 @@
 import os
 import logging
+from functools import partial
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 from telegram import Update
 from dotenv import load_dotenv
@@ -11,9 +12,7 @@ def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text("Здравствуйте")
 
 
-def handle_message(update: Update, context: CallbackContext) -> None:
-    
-    project_id = os.environ["PROJECT_ID"]
+def handle_message(update: Update, context: CallbackContext, project_id) -> None:
     
     user_text = update.message.text
     user_id = update.effective_user.id
@@ -30,7 +29,10 @@ def handle_message(update: Update, context: CallbackContext) -> None:
 def main():
 
     load_dotenv()
+    project_id = os.environ["PROJECT_ID"]
     tg_token = os.environ["TG_BOT_API"]
+    
+    handle_message_with_args = partial(handle_message, project_id=project_id)
 
     logger = setup_logging()
 
@@ -40,7 +42,7 @@ def main():
         dispatcher = updater.dispatcher
 
         dispatcher.add_handler(CommandHandler('start', start))
-        dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
+        dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message_with_args))
 
         updater.start_polling()
         updater.idle()
